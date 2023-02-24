@@ -5,6 +5,7 @@ import "../lib/dayjs";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query";
 import { DefaultSeo } from "next-seo";
+import { ChakraProvider } from "@chakra-ui/react";
 
 globalStyles();
 
@@ -13,18 +14,20 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>
-        <DefaultSeo
-          openGraph={{
-            type: "website",
-            locale: "pt_BR",
-            url: "https://www.urldaaplicação.ie/",
-            siteName: "CALL",
-          }}
-        />
-        <Component {...pageProps} />
-      </SessionProvider>
-    </QueryClientProvider>
+    <ChakraProvider>
+      <QueryClientProvider client={queryClient}>
+        <SessionProvider session={session}>
+          <DefaultSeo
+            openGraph={{
+              type: "website",
+              locale: "pt_BR",
+              url: "https://www.urldaaplicação.ie/",
+              siteName: "CALL",
+            }}
+          />
+          <Component {...pageProps} />
+        </SessionProvider>
+      </QueryClientProvider>
+    </ChakraProvider>
   );
 }
