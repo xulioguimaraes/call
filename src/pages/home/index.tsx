@@ -20,6 +20,7 @@ import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+// const debouncedChangeHandler = debounce(changeHandler, 300)
 const emailLoginSchema = z.object({
   email: z.string().email({ message: "Insira um email valido" }),
 });
