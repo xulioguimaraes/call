@@ -27,7 +27,7 @@ const emailLoginSchema = z.object({
 
 type EmailLoginData = z.infer<typeof emailLoginSchema>;
 
-export default function Home() {
+export default function Login() {
   const {
     register,
     handleSubmit,
@@ -41,7 +41,7 @@ export default function Home() {
     const isSignedIn = session.status === "authenticated";
 
     if (isSignedIn) {
-      await router.push("/home");
+      await router.push("/admin");
     }
   };
   useEffect(() => {

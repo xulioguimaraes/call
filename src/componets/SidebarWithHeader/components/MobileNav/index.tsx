@@ -43,13 +43,13 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       height="20"
       alignItems="center"
       bg={useColorModeValue("white", "gray.900")}
-      justifyContent={{ base: "space-between", md: "flex-end" }}
+      justifyContent={{ base: "space-between", md: "space-between" }}
       {...rest}
     >
       <Box display={{ base: "none", md: "block" }}>
         <Breadcrumb>
           <BreadcrumbItem>
-            <BreadcrumbLink>Clinifisio</BreadcrumbLink>
+            <BreadcrumbLink>Admin</BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage>
