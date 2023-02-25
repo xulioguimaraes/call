@@ -42,6 +42,7 @@
   "devDependencies": {
     "@rocketseat/eslint-config": "^1.2.0",
     "@types/cookie": "^0.5.1",
+    "@types/lodash.debounce": "^4.0.7",
     "prisma": "^4.10.1"
   }
 }
