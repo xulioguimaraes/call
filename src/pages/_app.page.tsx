@@ -6,7 +6,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/react-query";
 import { DefaultSeo } from "next-seo";
 import { ChakraProvider } from "@chakra-ui/react";
-import SidebarWithHeader from "@/componets/SidebarWithHeader";
+import SidebarWithHeader from "@/components/SidebarWithHeader";
 // import { Menu } from "@/componets/SidebarWithHeader";
 
 globalStyles();
