@@ -31,7 +31,7 @@ export default function SidebarWithHeader({
       <Box minH="100vh">
         <SidebarContent
           onClose={() => onClose}
-          display={{ base: "none",md: "block"}}
+          display={["none", "none", "none", "block"]}
           m="2"
           h="98%"
         />
@@ -48,7 +48,7 @@ export default function SidebarWithHeader({
           </DrawerContent>
         </Drawer>
         <MobileNav onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 72 }} p="4">
+        <Box ml={[0,0,0,72]} p="4">
           {children}
         </Box>
       </Box>

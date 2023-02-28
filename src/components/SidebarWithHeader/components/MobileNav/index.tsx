@@ -35,18 +35,17 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const router = useRouter();
   const asPath = router.asPath;
   const namePath = routers.find((router) => router.path === asPath);
-  console.log(namePath)
+  console.log(namePath);
   return (
     <Flex
-      ml={{ base: 0, md: 72 }}
+      ml={[0, 0, 0, 72]}
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
-      
       justifyContent={{ base: "space-between", md: "space-between" }}
       {...rest}
     >
-      <Box display={{ base: "none", md: "block" }}>
+      <Box display={["none", "none", "none", "block"]}>
         <Breadcrumb>
           <BreadcrumbItem>
             <BreadcrumbLink>Admin</BreadcrumbLink>
@@ -62,7 +61,7 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </Box>
 
       <IconButton
-        display={{ base: "flex", md: "none" }}
+        display={["none", "none", "flex", "flex"]}
         onClick={onOpen}
         variant="outline"
         aria-label="open menu"
@@ -109,10 +108,7 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                 </Box>
               </HStack>
             </MenuButton>
-            <MenuList
-            
-              borderColor={useColorModeValue("gray.200", "gray.700")}
-            >
+            <MenuList borderColor={useColorModeValue("gray.200", "gray.700")}>
               <MenuItem>Profile</MenuItem>
               <MenuItem>Settings</MenuItem>
               <MenuItem>Billing</MenuItem>
