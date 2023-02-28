@@ -19,9 +19,12 @@ interface NavItemProps extends ButtonProps {
 export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
   const router = useRouter();
   const asPath = router.asPath;
+  const handlePath = async (toPath: string) => {
+    await router.push(`/admin${toPath}`);
+  };  
   return (
     <Link
-      href="#"
+      // href={path}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -31,8 +34,10 @@ export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
         width={"full"}
         display="flex"
         size={"md"}
+        type="button"
         borderRadius="full"
         alignItems={"center"}
+        onClick={() => handlePath(path)}
         justifyContent={"flex-start"}
         variant={asPath === path ? "solid" : "ghost"}
         {...(asPath === path && { shadow: "md" })}

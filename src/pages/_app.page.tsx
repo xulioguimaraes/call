@@ -27,7 +27,6 @@ export default function App({
               siteName: "CALL",
             }}
           />
-          {/* <Menu /> */}
           <SidebarWithHeader>
             <Component {...pageProps} />
           </SidebarWithHeader>

@@ -28,9 +28,9 @@ import Script from "next/script";
 
 import { SalesOverviews } from "@/views/Admin/components/SalesOverviews/SalesOverviews";
 import { Performance } from "@/views/Admin/components/Performance/Performance";
+import dayjs from "dayjs";
+import { destroyCookie } from "nookies";
 export default function Home() {
-  const iconBlue = useColorModeValue("blue.500", "blue.500");
-  const iconBoxInside = useColorModeValue("white", "white");
   const textColor = useColorModeValue("gray.700", "white");
   const tableRowColor = useColorModeValue("#F7FAFC", "navy.900");
   const borderColor = useColorModeValue("gray.200", "gray.600");
@@ -127,7 +127,8 @@ export default function Home() {
           icon={<BiDollarCircle size={"3em"} />}
         />
       </SimpleGrid>
-      <Grid pt={4}
+      <Grid
+        pt={4}
         templateColumns={{ sm: "1fr", lg: "2fr 1fr" }}
         templateRows={{ lg: "repeat(2, auto)" }}
         gap="20px"
@@ -291,7 +292,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     res,
     buildNextAuthOption(req, res)
   );
-  if (!session) {
+  const expires = dayjs(session?.expires).isBefore(new Date());
+  if (expires || !session) {
+    
     return {
       redirect: {
         destination: "/",
