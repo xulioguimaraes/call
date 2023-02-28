@@ -7,7 +7,7 @@ export default function Financial() {
   return (
     <>
       <NextSeo title="Financeiro | Clinifisio" noindex />
-        <Grid templateColumns={"repeat(5, 1fr)"}>
+        <Grid  gap={"2"} templateColumns={"repeat(3, 1fr)"}>
 
         </Grid>
      

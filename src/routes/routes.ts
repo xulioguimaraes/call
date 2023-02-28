@@ -4,7 +4,7 @@ import { MdOutlineAttachMoney } from "react-icons/md";
 export const routers = [
   {
     icon: AiFillHome,
-    path: "/",
+    path: "/admin",
     name: "Home",
   },
   {

@@ -26,27 +26,32 @@ export default function SidebarWithHeader({
   }
 
   return (
-    <Box minH="100vh" bg={"gray.900"}>
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-      />
-      <Drawer
-        autoFocus={false}
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        returnFocusOnClose={false}
-        onOverlayClick={onClose}
-      >
-        <DrawerContent>
-          <SidebarContent onClose={onClose} />
-        </DrawerContent>
-      </Drawer>
-      <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {children}
+    <>
+      {/* <Box bgColor="blue.600" w="full" h={"full"} position="fixed" /> */}
+      <Box minH="100vh">
+        <SidebarContent
+          onClose={() => onClose}
+          display={{ base: "none",md: "block"}}
+          m="2"
+          h="98%"
+        />
+        <Drawer
+          autoFocus={false}
+          isOpen={isOpen}
+          placement="left"
+          onClose={onClose}
+          returnFocusOnClose={false}
+          onOverlayClick={onClose}
+        >
+          <DrawerContent>
+            <SidebarContent onClose={onClose} h="full"/>
+          </DrawerContent>
+        </Drawer>
+        <MobileNav onOpen={onOpen} />
+        <Box ml={{ base: 0, md: 72 }} p="4">
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

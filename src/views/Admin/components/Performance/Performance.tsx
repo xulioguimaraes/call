@@ -8,7 +8,7 @@ export const Performance = () => {
     <>
       <Card
         p="0px"
-        maxW={{ sm: "320px", md: "100%" }}
+        maxW={"100%"}
         bg={"linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"}
       >
         <Flex direction="column" mb="40px" p="28px 0px 0px 22px">

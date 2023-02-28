@@ -20,8 +20,10 @@ export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
   const router = useRouter();
   const asPath = router.asPath;
   const handlePath = async (toPath: string) => {
-    await router.push(`/admin${toPath}`);
+    const p = toPath === "/admin" ? "/": toPath;
+    await router.push(`/admin${p}`);
   };  
+
   return (
     <Link
       // href={path}
@@ -35,6 +37,7 @@ export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
         display="flex"
         size={"md"}
         type="button"
+        colorScheme='gray'
         borderRadius="full"
         alignItems={"center"}
         onClick={() => handlePath(path)}

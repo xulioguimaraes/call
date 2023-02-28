@@ -80,7 +80,7 @@ export default function Login() {
           </Stack>
           <Box
             rounded={"lg"}
-            bg={useColorModeValue("white", "gray.700")}
+            
             boxShadow={"lg"}
             p={8}
           >

@@ -35,14 +35,14 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const router = useRouter();
   const asPath = router.asPath;
   const namePath = routers.find((router) => router.path === asPath);
-  console.log(router);
+  console.log(namePath)
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
+      ml={{ base: 0, md: 72 }}
       px={{ base: 4, md: 4 }}
       height="20"
       alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
+      
       justifyContent={{ base: "space-between", md: "space-between" }}
       {...rest}
     >
@@ -110,7 +110,7 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               </HStack>
             </MenuButton>
             <MenuList
-              bg={useColorModeValue("white", "gray.900")}
+            
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
               <MenuItem>Profile</MenuItem>

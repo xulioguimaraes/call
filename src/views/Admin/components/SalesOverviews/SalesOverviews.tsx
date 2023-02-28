@@ -7,7 +7,7 @@ export const SalesOverviews = () => {
       <Card
         bg={"linear-gradient(81.62deg, #313860 2.25%, #151928 79.87%)"}
         p="0px"
-        maxW={{ sm: "320px", md: "100%" }}
+        maxW={"100%"}
       >
         <Flex direction="column" mb="40px" p="28px 0px 0px 22px">
           <Text color="#fff" fontSize="lg" fontWeight="bold" mb="6px">

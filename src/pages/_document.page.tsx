@@ -1,3 +1,5 @@
+import theme from '@/lib/chakra-ui'
+import { ColorModeScript } from '@chakra-ui/react'
 import { getCssText } from '@ignite-ui/react'
 import { Html, Head, Main, NextScript } from 'next/document'
 
@@ -23,6 +25,7 @@ export default function Document() {
         />
       </Head>
       <body>
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Main />
         <NextScript />
       </body>

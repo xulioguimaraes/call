@@ -13,21 +13,23 @@ import Image from "next/image";
 import { NavItem } from "../components/NavItem";
 import logoImage from "../../../assets/logo.png";
 import { routers } from "@/routes/routes";
+import { useRouter } from "next/router";
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
 }
 
 export const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const router = useRouter();
   return (
     <Box
       transition="1s ease"
-      bg={useColorModeValue("white", "gray.900")}
-      w={{ base: "full", md: 64 }}
+      bg={"gray.700"}
+      borderRadius={"lg"}
+      w={{ base: "full", md: 72 }}
       pos="fixed"
       p="4"
       gap={2}
-      h="full"
       flexDirection="column"
       {...rest}
     >

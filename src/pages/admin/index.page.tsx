@@ -104,8 +104,8 @@ export default function Home() {
     <>
       <Script src="echarts.js" />
       <NextSeo title="Home | Clinifisio" noindex />
-
-      <SimpleGrid columns={{ base: 1, md: 4 }} spacing={{ base: 5, lg: 8 }}>
+      <div>
+      <SimpleGrid columns={{ base: 1, md: 4, }} spacing={{ base: 5, lg: 5 }}>
         <StatusCard
           title={"DINHEIRO DE HOJE"}
           stat={"R$ 53,89"}
@@ -135,7 +135,7 @@ export default function Home() {
       >
         <SalesOverviews />
         <Performance />
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+        <Card p="0px" maxW={"100%"}>
           <Flex direction="column">
             <Flex align="center" justify="space-between" p="22px">
               <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -208,7 +208,7 @@ export default function Home() {
             </Box>
           </Flex>
         </Card>
-        <Card p="0px" maxW={{ sm: "320px", md: "100%" }}>
+        <Card p="0px" maxW={"100%"}>
           <Flex direction="column">
             <Flex align="center" justify="space-between" p="22px">
               <Text fontSize="lg" color={textColor} fontWeight="bold">
@@ -282,6 +282,9 @@ export default function Home() {
           </Box>
         </Card>
       </Grid>
+      </div>
+
+      
     </>
   );
 }
