@@ -19,11 +19,13 @@ model User {
   email      String?  @unique
   create_at  DateTime @default(now())
   avatar_url String?
+  admin      Boolean  @default(false)
 
   accounts      Account[]
   sessions      Session[]
   timeIntervals UserTimeInterval[]
   Scheduling    Scheduling[]
+  transactions  Transation[]
 
   @@map("users")
 }
@@ -90,11 +92,28 @@ model Scheduling {
 
 model Transation {
   id          String   @id @default(uuid())
-  tile        String
+  title       String
   price       Int
   description String?  @db.Text
   type        Boolean  @default(false)
   created_at  DateTime @default(now())
 
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  typeTransaction TypeTransation? @relation(fields: [type_transation], references: [type_transation])
+  type_transation Int
+
+  @@index([user_id])
+  @@index([type_transation])
   @@map("transations")
+}
+
+model TypeTransation {
+  type_transation Int    @id
+  name            String
+
+  transactions Transation[]
+
+  @@map("type_transations")
 }

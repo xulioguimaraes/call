@@ -1,3 +1,4 @@
+import { api } from "@/lib/axios";
 import {
   Icon,
   Container,
@@ -13,37 +14,80 @@ import {
   RadioGroup,
   Select,
   FormControl,
+  FormLabel,
+  Collapse,
+  FormErrorMessage,
+  Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NextSeo } from "next-seo";
-import { useState } from "react";
+
 import { Controller, useForm } from "react-hook-form";
-import InputMask from "react-input-mask";
+
 import { z } from "zod";
 const formSchema = z.object({
   title: z.string().min(3),
-  price: z.string(),
-  description: z.string(),
-  type: z.string(),
-  typeEntry: z.string(),
+  price: z
+    .string()
+    .transform((value) => Number(value?.replace(/[^0-9]/g, "")) * 100)
+    .refine((price) => price > 0, {
+      message: "O preço deve ser maior que zero",
+    }),
+  description: z.string().optional(),
+  type: z.string().transform((value) => (value === "1" ? true : false)),
+  type_transation: z
+    .string()
+    .refine((value) => (value === "" || value === "0" ? false : true), {
+      message: "Selecione o tipo da entrada",
+    })
+    .transform((value) => Number(value?.replace(/[^0-9]/g, ""))),
 });
+type FormDataInput = z.input<typeof formSchema>;
+type FormDataOutput = z.output<typeof formSchema>;
 
-type FormData = z.infer<typeof formSchema>;
 export default function Financial() {
-  const { register, handleSubmit, control, watch } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<FormDataInput>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      price: "",
-    },
   });
-  const onSubmit = (data: FormData) => {
+  const toast = useToast()
+  const onSubmit = async (data: any) => {
     console.log(data);
+    const { description, price, title, type, type_transation } =
+      data as FormDataOutput;
+   const response = await api.post("/admin/create-transaction", {
+      description,
+      price,
+      title,
+      type,
+      type_transation,
+    });
+
+    if (response.status === 201) {
+      toast({
+        title: 'Transação criada',
+        description: "Para mais informações vá em Transferencias",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
   };
   const valuePrice = watch("price") ? watch("price") : "";
   const price = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
-  }).format(Number(valuePrice?.replace(/[^0-9]/g, "")) / 100);
+  }).format(Number(String(valuePrice)?.replace(/[^0-9]/g, "")) / 100);
+
+  const typeEntry = watch("type") === "1";
 
   return (
     <>
@@ -57,56 +101,96 @@ export default function Financial() {
         as={Container}
         bg={"gray.700"}
       >
-        <Stack as={FormControl} spacing={2} onSubmit={handleSubmit(onSubmit)}>
+        <Stack as={"form"} spacing={3} onSubmit={handleSubmit(onSubmit)}>
           <Heading as="h2" size={"md"}>
             Cadastar Transação
           </Heading>
+          <FormControl isInvalid={!!errors?.title}>
+            <FormLabel mb={0} fontWeight={"bold"} fontSize="sm">
+              Titulo
+            </FormLabel>
+            <Input
+              {...register("title", { required: true })}
+              type="text"
+              name="title"
+              placeholder="Titulo"
+            />
+          </FormControl>
+          <FormControl isInvalid={!!errors?.price}>
+            <FormLabel mb={0} fontWeight={"bold"} fontSize="sm">
+              Preço
+            </FormLabel>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              defaultValue={"0"}
+              name="price"
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  name="price"
+                  value={price}
+                  placeholder="Valor"
+                />
+              )}
+            />
+            <FormErrorMessage>{errors.price?.message}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!!errors.type}>
+            <Controller
+              name="type"
+              control={control}
+              defaultValue={"1"}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  <Stack direction="row">
+                    <Radio value="1">Entrada</Radio>
+                    <Radio value="0">Saida</Radio>
+                  </Stack>
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
 
-          <Input
-            {...register("title")}
-            type="text"
-            name="title"
-            placeholder="Titulo"
-          />
-          <Controller
-            control={control}
-            name="price"
-            render={({ field }) => (
-              <Input
-                {...field}
-                name="price"
-                value={price}
-                placeholder="Valor"
-              />
-            )}
-          />
+          <FormControl isInvalid={!!errors.type_transation}>
+            <FormLabel mb={0} fontWeight={"bold"} fontSize="sm">
+              Forma de transferencia
+            </FormLabel>
+            <Select
+              {...register("type_transation", { required: true })}
+              placeholder="Tipo de entrada"
+            >
+              <option value="1">Credito</option>
+              <option value="2">Debito</option>
+              <option value="3">PIX</option>
+              <option value="4">Dinheiro</option>
+            </Select>
+            <FormErrorMessage>
+              {errors.type_transation?.message}
+            </FormErrorMessage>
+          </FormControl>
 
-          <Controller
-            name="type"
-            control={control}
-            render={({ field }) => (
-              <RadioGroup defaultValue="1" {...field}>
-                <Stack direction="row">
-                  <Radio value="1">Entrada</Radio>
-                  <Radio value="2">Saida</Radio>
-                </Stack>
-              </RadioGroup>
-            )}
-          />
+          <FormControl>
+            <FormLabel mb={0} fontWeight={"bold"} fontSize="sm">
+              Descrição
+            </FormLabel>
 
-          <Select {...register("typeEntry")} placeholder="Tipo de entrada">
-            <option value="1">Credito</option>
-            <option value="2">Debito</option>
-            <option value="3">PIX</option>
-            <option value="4">Dinheiro</option>
-          </Select>
-          <Textarea
-            {...register("description")}
-            name="description"
-            placeholder="Descrição"
-          />
+            <Textarea
+              {...register("description")}
+              name="description"
+              placeholder="Descrição"
+            />
+          </FormControl>
 
-          <Button colorScheme={"whatsapp"} type="submit">
+          <Button
+            leftIcon={true ? <Spinner /> : <></>}
+            colorScheme={"whatsapp"}
+            type="submit"
+            disabled={isSubmitting}
+          >
             Cadastrar
           </Button>
         </Stack>
