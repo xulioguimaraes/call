@@ -34,8 +34,10 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const session = useSession();
   const router = useRouter();
   const asPath = router.asPath;
-  const namePath = routers.find((router) => router.path === asPath);
-  console.log(namePath);
+  const namePath = routers.find(
+    (router) => asPath.includes(router.path) || router.path !== "/admin"
+  );
+  console.log(asPath);
   return (
     <Flex
       ml={[0, 0, 0, 72]}
@@ -61,7 +63,7 @@ export const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </Box>
 
       <IconButton
-        display={["none", "none", "flex", "flex"]}
+        display={["flex", "flex", "flex", "none"]}
         onClick={onOpen}
         variant="outline"
         aria-label="open menu"

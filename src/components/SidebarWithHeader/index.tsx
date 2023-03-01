@@ -9,7 +9,7 @@ import {
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import { MobileNav } from "./components/MobileNav";
-import { SidebarContent } from "./SidBarContent";
+import { SidebarContent } from "./components/SidBarContent";
 
 export default function SidebarWithHeader({
   children,
@@ -27,7 +27,6 @@ export default function SidebarWithHeader({
 
   return (
     <>
-      {/* <Box bgColor="blue.600" w="full" h={"full"} position="fixed" /> */}
       <Box minH="100vh">
         <SidebarContent
           onClose={() => onClose}

@@ -10,10 +10,10 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import { NavItem } from "../components/NavItem";
-import logoImage from "../../../assets/logo.png";
+import logoImage from "../../../../assets/logo.png";
 import { routers } from "@/routes/routes";
 import { useRouter } from "next/router";
+import { NavItem } from "../NavItem";
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
