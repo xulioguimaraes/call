@@ -1,4 +1,4 @@
-import { Loading } from "@/components/Loading/Loading";
+import { useLoading } from "@/hooks/useLoading/useLoading";
 import { api } from "@/lib/axios";
 import {
   Container,
@@ -19,7 +19,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -54,12 +53,13 @@ export default function Financial() {
   } = useForm<FormDataInput>({
     resolver: zodResolver(formSchema),
   });
+  const { onChange } = useLoading();
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    setIsLoading(true);
+    onChange();
     const { description, price, title, type, type_transation } =
       data as FormDataOutput;
     const response = await api.post("/admin/create-transaction", {
@@ -88,7 +88,7 @@ export default function Financial() {
       });
     }
     await router.push("/admin/financeiro");
-    setIsLoading(false);
+    onChange();
   };
   const valuePrice = watch("price") ? watch("price") : "";
   const price = new Intl.NumberFormat("pt-BR", {
@@ -99,8 +99,6 @@ export default function Financial() {
   return (
     <>
       <NextSeo title="Cadastrar | Clinifisio" noindex />
-
-      {isLoading && <Loading />}
       <Stack
         px={4}
         py={6}
@@ -194,7 +192,6 @@ export default function Financial() {
           </FormControl>
 
           <Button
-            leftIcon={isSubmitting || isLoading ? <Spinner /> : <></>}
             colorScheme={"whatsapp"}
             type="submit"
             disabled={isSubmitting}

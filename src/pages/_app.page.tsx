@@ -10,12 +10,16 @@ import SidebarWithHeader from "@/components/SidebarWithHeader";
 import theme from "@/lib/chakra-ui";
 // import { Menu } from "@/componets/SidebarWithHeader";
 import "../styles/styles.css";
+import { Loading } from "@/components/Loading/Loading";
+import { LoadingProvider, useLoading } from "@/hooks/useLoading/useLoading";
 globalStyles();
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const { isOpen } = useLoading();
+  console.log(isOpen);
   return (
     <ChakraProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
@@ -28,9 +32,12 @@ export default function App({
               siteName: "CALL",
             }}
           />
-          <SidebarWithHeader>
-            <Component {...pageProps} />
-          </SidebarWithHeader>
+          <LoadingProvider>
+            
+            <SidebarWithHeader>
+              <Component {...pageProps} />
+            </SidebarWithHeader>
+          </LoadingProvider>
         </SessionProvider>
       </QueryClientProvider>
     </ChakraProvider>
