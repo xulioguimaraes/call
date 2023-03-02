@@ -1,27 +1,25 @@
+import { Loading } from "@/components/Loading/Loading";
 import { api } from "@/lib/axios";
 import {
-  Icon,
   Container,
-  Flex,
-  Grid,
   Heading,
   Input,
   Stack,
   Textarea,
   Button,
-  Box,
   Radio,
   RadioGroup,
   Select,
   FormControl,
   FormLabel,
-  Collapse,
   FormErrorMessage,
   Spinner,
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -52,18 +50,19 @@ export default function Financial() {
     handleSubmit,
     control,
     watch,
-    setValue,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<FormDataInput>({
     resolver: zodResolver(formSchema),
   });
-  const toast = useToast()
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
   const onSubmit = async (data: any) => {
-    console.log(data);
+    setIsLoading(true);
     const { description, price, title, type, type_transation } =
       data as FormDataOutput;
-   const response = await api.post("/admin/create-transaction", {
+    const response = await api.post("/admin/create-transaction", {
       description,
       price,
       title,
@@ -73,13 +72,23 @@ export default function Financial() {
 
     if (response.status === 201) {
       toast({
-        title: 'Transação criada',
+        title: "Transação criada",
         description: "Para mais informações vá em Transferencias",
-        status: 'success',
+        status: "success",
         duration: 5000,
         isClosable: true,
-      })
+      });
+    } else {
+      toast({
+        title: "Erro ao criar transação",
+        description: "Verifique as informações e tente novamente",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
+    await router.push("/admin/financeiro");
+    setIsLoading(false);
   };
   const valuePrice = watch("price") ? watch("price") : "";
   const price = new Intl.NumberFormat("pt-BR", {
@@ -87,12 +96,11 @@ export default function Financial() {
     currency: "BRL",
   }).format(Number(String(valuePrice)?.replace(/[^0-9]/g, "")) / 100);
 
-  const typeEntry = watch("type") === "1";
-
   return (
     <>
       <NextSeo title="Cadastrar | Clinifisio" noindex />
 
+      {isLoading && <Loading />}
       <Stack
         px={4}
         py={6}
@@ -186,7 +194,7 @@ export default function Financial() {
           </FormControl>
 
           <Button
-            leftIcon={true ? <Spinner /> : <></>}
+            leftIcon={isSubmitting || isLoading ? <Spinner /> : <></>}
             colorScheme={"whatsapp"}
             type="submit"
             disabled={isSubmitting}

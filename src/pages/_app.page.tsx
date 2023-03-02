@@ -9,7 +9,7 @@ import { ChakraProvider, Container } from "@chakra-ui/react";
 import SidebarWithHeader from "@/components/SidebarWithHeader";
 import theme from "@/lib/chakra-ui";
 // import { Menu } from "@/componets/SidebarWithHeader";
-
+import "../styles/styles.css";
 globalStyles();
 
 export default function App({
