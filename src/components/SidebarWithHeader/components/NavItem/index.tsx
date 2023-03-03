@@ -1,3 +1,4 @@
+import { useLoading } from "@/hooks/useLoading/useLoading";
 import {
   Flex,
   FlexProps,
@@ -19,10 +20,13 @@ interface NavItemProps extends ButtonProps {
 export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
   const router = useRouter();
   const asPath = router.asPath;
+  const { onChange } = useLoading();
   const handlePath = async (toPath: string) => {
-    const p = toPath === "/admin" ? "/": toPath;
+    onChange();
+    const p = toPath === "/admin" ? "/" : toPath;
     await router.push(`/admin${p}`);
-  };  
+    onChange();
+  };
 
   return (
     <Link
@@ -37,7 +41,7 @@ export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
         display="flex"
         size={"md"}
         type="button"
-        colorScheme='gray'
+        colorScheme="gray"
         borderRadius="full"
         alignItems={"center"}
         onClick={() => handlePath(path)}

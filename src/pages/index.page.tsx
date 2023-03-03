@@ -20,6 +20,7 @@ import { api } from "@/lib/axios";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useLoading } from "@/hooks/useLoading/useLoading";
 
 const emailLoginSchema = z.object({
   email: z.string().email({ message: "Insira um email valido" }),
@@ -36,18 +37,23 @@ export default function Login() {
     resolver: zodResolver(emailLoginSchema),
   });
   const session = useSession();
+  const { onChange } = useLoading();
   const router = useRouter();
   const authenticated = async () => {
+   
     const isSignedIn = session.status === "authenticated";
 
     if (isSignedIn) {
       await router.push("/admin");
     }
+    onChange();
   };
   useEffect(() => {
+    onChange();
     authenticated();
   }, [session]);
   const onSubmit = async (data: EmailLoginData) => {
+    onChange();
     const response = await api.get("/users/user-exists", {
       params: {
         email: data.email,
@@ -56,6 +62,7 @@ export default function Login() {
     if (response.status === 200) {
       await signIn("google");
     }
+    onChange();
   };
   return (
     <>
@@ -78,12 +85,7 @@ export default function Login() {
           <Stack align={"center"}>
             <Image src={logoImage} alt="logo" />
           </Stack>
-          <Box
-            rounded={"lg"}
-            
-            boxShadow={"lg"}
-            p={8}
-          >
+          <Box rounded={"lg"} boxShadow={"lg"} p={8}>
             <Stack spacing={4}>
               <FormControl id="email">
                 <FormLabel>Email</FormLabel>

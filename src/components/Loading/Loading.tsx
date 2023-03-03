@@ -13,6 +13,7 @@ export const Loading = ({ isOpen }: LoadingProps) => {
         display={isOpen ? "block" : "none"}
         transition="2s ease"
         w="full"
+        zIndex={"99"}
         bg={"rgba(0,0,0,.6)"}
         position={"absolute"}
         top="0"

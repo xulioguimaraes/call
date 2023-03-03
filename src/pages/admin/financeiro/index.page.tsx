@@ -1,6 +1,9 @@
 import { StatusCard } from "@/components/StatusCard";
+import { useLoading } from "@/hooks/useLoading/useLoading";
+import { api } from "@/lib/axios";
 import { PageVisits } from "@/views/Admin/components/PageVisits/PageVisits";
 import { Button, Flex, Grid, Stack } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { BiDollarCircle } from "react-icons/bi";
@@ -8,9 +11,21 @@ import { GrAdd } from "react-icons/gr";
 
 export default function Financial() {
   const router = useRouter();
+  const { onChange } = useLoading();
   const handleEntry = async () => {
+    onChange();
     await router.push("/admin/financeiro/cadastrar");
+    onChange();
   };
+
+  const { data } = useQuery(
+    ["dataTableAdmin"],
+    async () => {
+      const response = await api.get(`/admin/get-transaction`);
+      return response.data;
+    }
+  );
+  console.log(data)
   return (
     <>
       <NextSeo title="Financeiro | Clinifisio" noindex />
