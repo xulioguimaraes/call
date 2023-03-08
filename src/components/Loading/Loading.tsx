@@ -5,17 +5,16 @@ interface LoadingProps {
   isOpen: boolean;
 }
 export const Loading = ({ isOpen }: LoadingProps) => {
-  console.log(`Loading ${isOpen}`);
   return (
     <>
       <Box
-        h={"full"}
+        h={"100vh"}
         display={isOpen ? "block" : "none"}
         transition="2s ease"
         w="full"
         zIndex={"99"}
         bg={"rgba(0,0,0,.6)"}
-        position={"absolute"}
+        position={"fixed"}
         top="0"
         right={"0"}
         backdropFilter="blur(10px) hue-rotate(360deg)"

@@ -16,13 +16,25 @@ export default async function handler(
     buildNextAuthOption(req, res)
   );
 
-  //   if (!session) {
-  //     return res.status(401).end();
-  //   }
+  if (!session) {
+    return res.status(401).end();
+  }
+  const { perPage, page } = req.query;
 
-  const transation = await prisma.transation.findMany({ take: 4, orderBy: {
-    created_at: "desc"
-  } });
+  const currentPage = page ? Number(page) : 1;
+  const take = perPage ? Number(perPage) : 10; // Número de registros por página
+  const skip = (currentPage - 1) * take; // Número de registros a serem pulados
+  const total = await prisma.transation.count();
+  const totalPages = Math.ceil(total / take);
+  const transation = await prisma.transation.findMany({
+    take,
+    skip,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
 
-  return res.status(200).json(transation);
+  return res
+    .status(200)
+    .json({ data: transation, perPage, total, page, totalPages });
 }

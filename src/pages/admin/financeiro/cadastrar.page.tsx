@@ -53,13 +53,13 @@ export default function Financial() {
   } = useForm<FormDataInput>({
     resolver: zodResolver(formSchema),
   });
-  const { onChange } = useLoading();
+  const { showLoading, closedLoading } = useLoading();
   const toast = useToast();
 
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    onChange();
+    showLoading();
     const { description, price, title, type, type_transation } =
       data as FormDataOutput;
     const response = await api.post("/admin/create-transaction", {
@@ -88,7 +88,7 @@ export default function Financial() {
       });
     }
     await router.push("/admin/financeiro");
-    onChange();
+    closedLoading();
   };
   const valuePrice = watch("price") ? watch("price") : "";
   const price = new Intl.NumberFormat("pt-BR", {

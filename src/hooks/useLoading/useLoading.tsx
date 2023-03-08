@@ -6,22 +6,26 @@ interface LoadingProviderProps {
 
 interface ILoadingProvider {
   isOpen: boolean;
-  onChange: () => void;
+  showLoading: () => void;
+  closedLoading: () => void;
 }
 
 const LoadingContext = createContext({} as ILoadingProvider);
 
 export const LoadingProvider = ({ children }: LoadingProviderProps) => {
-  const [isOpen, setIsLoading] = useState(false);
-  const handleChange = () => {
-    console.log("Loading");
-    setIsLoading((oldValue) => !oldValue);
+  const [isOpen, setIsLoading] = useState(true);
+  const showLoading = () => {
+    setIsLoading(true);
+  };
+  const closedLoading = () => {
+    setIsLoading(false);
   };
   return (
     <LoadingContext.Provider
       value={{
         isOpen,
-        onChange: handleChange,
+        showLoading,
+        closedLoading,
       }}
     >
       <Loading isOpen={isOpen} />

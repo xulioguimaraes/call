@@ -37,23 +37,22 @@ export default function Login() {
     resolver: zodResolver(emailLoginSchema),
   });
   const session = useSession();
-  const { onChange } = useLoading();
+  const { showLoading, closedLoading } = useLoading();
   const router = useRouter();
   const authenticated = async () => {
-   
     const isSignedIn = session.status === "authenticated";
 
     if (isSignedIn) {
       await router.push("/admin");
     }
-    onChange();
+    closedLoading();
   };
   useEffect(() => {
-    onChange();
+    showLoading();
     authenticated();
   }, [session]);
   const onSubmit = async (data: EmailLoginData) => {
-    onChange();
+    showLoading();
     const response = await api.get("/users/user-exists", {
       params: {
         email: data.email,
@@ -62,7 +61,7 @@ export default function Login() {
     if (response.status === 200) {
       await signIn("google");
     }
-    onChange();
+    closedLoading();
   };
   return (
     <>

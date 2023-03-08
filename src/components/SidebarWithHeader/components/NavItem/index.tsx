@@ -20,12 +20,12 @@ interface NavItemProps extends ButtonProps {
 export const NavItem = ({ icon, children, path, ...rest }: NavItemProps) => {
   const router = useRouter();
   const asPath = router.asPath;
-  const { onChange } = useLoading();
+  const { showLoading, closedLoading } = useLoading();
   const handlePath = async (toPath: string) => {
-    onChange();
+    showLoading();
     const p = toPath === "/admin" ? "/" : toPath;
     await router.push(`/admin${p}`);
-    onChange();
+    closedLoading();
   };
 
   return (

@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Flex,
+  Link,
   Table,
   Tbody,
   Td,
@@ -11,50 +12,46 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
+import { z } from "zod";
 
-export const PageVisits = () => {
-  const pageVisits = [
-    {
-      pageName: "/argon/",
-      visitors: "4,569",
-      uniqueUsers: 340,
-      bounceRate: "46,53%",
-    },
-    {
-      pageName: "/argon/index.html",
-      visitors: "3,985",
-      uniqueUsers: 319,
-      bounceRate: "46,53%",
-    },
-    {
-      pageName: "/argon/charts.html",
-      visitors: "3,513",
-      uniqueUsers: 294,
-      bounceRate: "36,49%",
-    },
-    {
-      pageName: "/argon/tables.html",
-      visitors: "2,050",
-      uniqueUsers: 147,
-      bounceRate: "50,87%",
-    },
-    {
-      pageName: "/argon/profile.html",
-      visitors: "1,795",
-      uniqueUsers: 190,
-      bounceRate: "46,53%",
-    },
-  ];
+const createTransactionSchema = z.object({
+  title: z.string(),
+  price: z.number().transform((price) =>
+    Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(price / 10000)
+  ),
+  description: z.string(),
+  type: z.boolean(),
+  type_transation: z.number(),
+  created_at: z.string().transform((date) => dayjs(date).format("DD/MM/YYYY")),
+});
+interface IDataTransaction {
+  title: string;
+  price: number;
+  description: string;
+  doctor?: string;
+  created_at: string;
+  type: boolean 
+}
+
+interface TableTransactionProps {
+  data: IDataTransaction[];
+}
+
+export const TableTransaction = ({ data }: TableTransactionProps) => {
   return (
     <>
       <Card p="0px" maxW={"100%"}>
         <Flex direction="column">
           <Flex align="center" justify="space-between" p="22px">
             <Text fontSize="lg" fontWeight="bold">
-              Page visits
+              Ultimas transações
             </Text>
             <Button variant="primary" maxH="30px">
-              SEE ALL
+              <Link>Ver todas</Link>
             </Button>
           </Flex>
           <Box overflow={{ sm: "scroll", lg: "hidden" }}>
@@ -79,7 +76,10 @@ export const PageVisits = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {pageVisits.map((el, index, arr) => {
+                {data?.map((el, index, arr) => {
+                  const { created_at, description, price, title, type } =
+                    createTransactionSchema.parse(el);
+                  const colorTypeTransation = type ? "green.400" : "red.400";
                   return (
                     <Tr key={index}>
                       <Td
@@ -90,7 +90,7 @@ export const PageVisits = () => {
                           border: "none",
                         })}
                       >
-                        {el.pageName}
+                        {title}
                       </Td>
                       <Td
                         fontSize="sm"
@@ -99,7 +99,7 @@ export const PageVisits = () => {
                         })}
                         borderColor={"gray.600"}
                       >
-                        {el.visitors}
+                        {/* {doctor} */}
                       </Td>
                       <Td
                         fontSize="sm"
@@ -108,7 +108,13 @@ export const PageVisits = () => {
                         })}
                         borderColor={"gray.600"}
                       >
-                        {el.uniqueUsers}
+                        <Text
+                          as="span"
+                          color={colorTypeTransation}
+                          fontWeight="bold"
+                        >
+                          {price}
+                        </Text>
                       </Td>
                       <Td
                         fontSize="sm"
@@ -117,7 +123,16 @@ export const PageVisits = () => {
                         })}
                         borderColor={"gray.600"}
                       >
-                        {el.bounceRate}
+                        {description}
+                      </Td>
+                      <Td
+                        fontSize="sm"
+                        {...(index === arr.length - 1 && {
+                          border: "none",
+                        })}
+                        borderColor={"gray.600"}
+                      >
+                        {created_at}
                       </Td>
                     </Tr>
                   );

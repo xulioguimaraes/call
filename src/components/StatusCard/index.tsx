@@ -1,29 +1,52 @@
 import {
   Box,
   Flex,
+  Stack,
   Stat,
   StatLabel,
   StatNumber,
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import dayjs from "dayjs";
 import { ReactNode } from "react";
 
 interface StatusCardProps {
   title: string;
   stat: string;
   icon: ReactNode;
+  positiveBalance?: boolean | undefined;
+  percentage: number | undefined;
+  dateLastTrasnsation?: Date;
 }
 export function StatusCard(props: StatusCardProps) {
-  const { title, stat, icon } = props;
+  const {
+    title,
+    stat,
+    icon,
+    positiveBalance,
+    percentage,
+    dateLastTrasnsation,
+  } = props;
   const textColor = useColorModeValue("gray.700", "white");
+  const colorBg =
+    positiveBalance === undefined
+      ? "gray.700"
+      : positiveBalance === true
+      ? "green.700"
+      : "red.800";
+  const colorPercentage = Number(percentage) > 0 ? "green.400" : "red.400";
+  const conditionPercentage = Number(percentage) > 0 ? true : false;
+  const conditionLastTransaction = dateLastTrasnsation
+    ? dayjs(dateLastTrasnsation).format("DD  [de] MMMM [de] YYYY")
+    : false;
 
   return (
     <Stat
       px={{ base: 2, md: 4 }}
       py={"5"}
       shadow={"xl"}
-      bg="gray.700"
+      bg={colorBg}
       rounded={"lg"}
     >
       <Flex direction="column">
@@ -32,7 +55,7 @@ export function StatusCard(props: StatusCardProps) {
           align="center"
           justify="center"
           w="100%"
-          mb="25px"
+          mb={conditionLastTransaction ? "10px" : "25px"}
         >
           <Stat me="auto">
             <StatLabel
@@ -45,7 +68,7 @@ export function StatusCard(props: StatusCardProps) {
             </StatLabel>
             <Flex>
               <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-               {stat}
+                {stat}
               </StatNumber>
             </Flex>
           </Stat>
@@ -57,12 +80,20 @@ export function StatusCard(props: StatusCardProps) {
             {icon}
           </Box>
         </Flex>
-        <Text color="gray.400" fontSize="sm">
-          <Text as="span" color="green.400" fontWeight="bold">
-            +3.48%{" "}
+
+        <Box>
+          <Text color="gray.200" fontSize="sm">
+            <Text as="span" color={colorPercentage} fontWeight="bold">
+              {percentage} %{" "}
+            </Text>
+            {conditionPercentage ? "Maior" : "Menor"} que o último mês
           </Text>
-          Desde o último mês
-        </Text>
+          {conditionLastTransaction && (
+            <Text color="gray.400" fontSize="sm">
+              {conditionLastTransaction}
+            </Text>
+          )}
+        </Box>
       </Flex>
     </Stat>
   );
