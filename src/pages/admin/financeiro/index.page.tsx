@@ -58,7 +58,7 @@ export default function Financial() {
     }
   );
 
-  const { data: summary } = useQuery<ISummary>(
+  const { data: summary, isLoading: isLoadingSummaty } = useQuery<ISummary>(
     ["summaryTransaction"],
     async () => {
       const response = await api.get(`/admin/get-summary-of-the-month`);
@@ -71,14 +71,19 @@ export default function Financial() {
   const handlePageTable = (page: number) => {
     setParams((oldValue) => ({ ...oldValue, page }));
   };
+  const handlePerPage = (perPage: number) => {
+    setParams((oldValue) => ({ ...oldValue, perPage }));
+  };
 
   useEffect(() => {
     if (isLoading) showLoading();
     else closedLoading();
   }, [isLoading]);
+
   useEffect(() => {
-    console.log(params);
-  }, [params]);
+    if (isLoadingSummaty) showLoading();
+    else closedLoading();
+  }, [isLoadingSummaty]);
 
   return (
     <>
@@ -105,7 +110,7 @@ export default function Financial() {
             title={"Saidas"}
             stat={summary?.output?.value || ""}
             icon={<BiDollarCircle size={"3em"} />}
-            dateLastTrasnsation={summary?.input?.date_last_trasnsation}
+            dateLastTrasnsation={summary?.output?.date_last_trasnsation}
             percentage={summary?.output?.percentage}
           />
           <StatusCard
@@ -116,12 +121,13 @@ export default function Financial() {
             positiveBalance={Number(summary?.total?.percentage) > 0}
           />
         </Grid>
-        {data?.data?.length && <TableTransaction data={data.data} />}
+        <TableTransaction data={data?.data || []} />
         <Pagination
           page={params.page}
           total={totalPages}
           perPage={params.perPage}
           onChange={handlePageTable}
+          onChangePerPage={handlePerPage}
         />
       </Stack>
     </>

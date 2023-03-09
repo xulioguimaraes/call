@@ -1,7 +1,10 @@
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Card,
+  Collapse,
   Flex,
   Link,
   Table,
@@ -13,6 +16,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import { useState } from "react";
 import { z } from "zod";
 
 const createTransactionSchema = z.object({
@@ -29,12 +33,13 @@ const createTransactionSchema = z.object({
   created_at: z.string().transform((date) => dayjs(date).format("DD/MM/YYYY")),
 });
 interface IDataTransaction {
+  id?: string;
   title: string;
   price: number;
   description: string;
   doctor?: string;
   created_at: string;
-  type: boolean 
+  type: boolean;
 }
 
 interface TableTransactionProps {
@@ -42,6 +47,11 @@ interface TableTransactionProps {
 }
 
 export const TableTransaction = ({ data }: TableTransactionProps) => {
+  const [rowData, setRowData] = useState({} as IDataTransaction);
+  const handleExpandedRow = (row: IDataTransaction) => {
+    setRowData(row);
+
+  };
   return (
     <>
       <Card p="0px" maxW={"100%"}>
@@ -75,66 +85,68 @@ export const TableTransaction = ({ data }: TableTransactionProps) => {
                   </Th>
                 </Tr>
               </Thead>
-              <Tbody>
+              <Tbody overflowY={"hidden"}>
                 {data?.map((el, index, arr) => {
                   const { created_at, description, price, title, type } =
                     createTransactionSchema.parse(el);
                   const colorTypeTransation = type ? "green.400" : "red.400";
                   return (
-                    <Tr key={index}>
-                      <Td
-                        fontSize="sm"
-                        fontWeight="bold"
-                        borderColor={"gray.600"}
-                        {...(index === arr.length - 1 && {
-                          border: "none",
-                        })}
-                      >
-                        {title}
-                      </Td>
-                      <Td
-                        fontSize="sm"
-                        {...(index === arr.length - 1 && {
-                          border: "none",
-                        })}
-                        borderColor={"gray.600"}
-                      >
-                        {/* {doctor} */}
-                      </Td>
-                      <Td
-                        fontSize="sm"
-                        {...(index === arr.length - 1 && {
-                          border: "none",
-                        })}
-                        borderColor={"gray.600"}
-                      >
-                        <Text
-                          as="span"
-                          color={colorTypeTransation}
+                    <>
+                      <Tr key={index} onClick={() => handleExpandedRow(el)}>
+                        <Td
+                          fontSize="sm"
                           fontWeight="bold"
+                          borderColor={"gray.600"}
+                          {...(index === arr.length - 1 && {
+                            border: "none",
+                          })}
                         >
-                          {price}
-                        </Text>
-                      </Td>
-                      <Td
-                        fontSize="sm"
-                        {...(index === arr.length - 1 && {
-                          border: "none",
-                        })}
-                        borderColor={"gray.600"}
-                      >
-                        {description}
-                      </Td>
-                      <Td
-                        fontSize="sm"
-                        {...(index === arr.length - 1 && {
-                          border: "none",
-                        })}
-                        borderColor={"gray.600"}
-                      >
-                        {created_at}
-                      </Td>
-                    </Tr>
+                          {title}
+                        </Td>
+                        <Td
+                          fontSize="sm"
+                          {...(index === arr.length - 1 && {
+                            border: "none",
+                          })}
+                          borderColor={"gray.600"}
+                        >
+                          {/* {doctor} */}
+                        </Td>
+                        <Td
+                          fontSize="sm"
+                          {...(index === arr.length - 1 && {
+                            border: "none",
+                          })}
+                          borderColor={"gray.600"}
+                        >
+                          <Text
+                            as="span"
+                            color={colorTypeTransation}
+                            fontWeight="bold"
+                          >
+                            {price}
+                          </Text>
+                        </Td>
+                        <Td
+                          fontSize="sm"
+                          {...(index === arr.length - 1 && {
+                            border: "none",
+                          })}
+                          borderColor={"gray.600"}
+                        >
+                          {description}
+                        </Td>
+                        <Td
+                          fontSize="sm"
+                          {...(index === arr.length - 1 && {
+                            border: "none",
+                          })}
+                          borderColor={"gray.600"}
+                        >
+                          {created_at}
+                        </Td>
+                      </Tr>
+                    </>
                   );
                 })}
               </Tbody>

@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Spinner,
   Stack,
   Stat,
   StatLabel,
@@ -40,7 +41,7 @@ export function StatusCard(props: StatusCardProps) {
   const conditionLastTransaction = dateLastTrasnsation
     ? dayjs(dateLastTrasnsation).format("DD  [de] MMMM [de] YYYY")
     : false;
-
+  
   return (
     <Stat
       px={{ base: 2, md: 4 }}
@@ -68,7 +69,7 @@ export function StatusCard(props: StatusCardProps) {
             </StatLabel>
             <Flex>
               <StatNumber fontSize="lg" color={textColor} fontWeight="bold">
-                {stat}
+                {stat === "" ? <Spinner /> : stat}
               </StatNumber>
             </Flex>
           </Stat>
@@ -82,12 +83,20 @@ export function StatusCard(props: StatusCardProps) {
         </Flex>
 
         <Box>
-          <Text color="gray.200" fontSize="sm">
-            <Text as="span" color={colorPercentage} fontWeight="bold">
-              {percentage} %{" "}
-            </Text>
-            {conditionPercentage ? "Maior" : "Menor"} que o último mês
-          </Text>
+          <Flex gap={2} alignItems="center">
+            {!percentage ? (
+              <Spinner />
+            ) : (
+              <>
+                <Text as="span" color={colorPercentage} fontWeight="bold">
+                  {percentage} %{" "}
+                </Text>
+                <Text color="gray.200" fontSize="sm">
+                  {conditionPercentage ? "Maior" : "Menor"} que o último mês
+                </Text>
+              </>
+            )}
+          </Flex>
           {conditionLastTransaction && (
             <Text color="gray.400" fontSize="sm">
               {conditionLastTransaction}
