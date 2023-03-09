@@ -1,3 +1,4 @@
+import { useLoading } from "@/hooks/useLoading/useLoading";
 import {
   Alert,
   AlertIcon,
@@ -6,7 +7,6 @@ import {
   Card,
   Collapse,
   Flex,
-  Link,
   Table,
   Tbody,
   Td,
@@ -16,6 +16,8 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { z } from "zod";
 
@@ -48,8 +50,10 @@ interface TableTransactionProps {
 
 export const TableTransaction = ({ data }: TableTransactionProps) => {
   const [rowData, setRowData] = useState({} as IDataTransaction);
-  const handleExpandedRow = (row: IDataTransaction) => {
-    setRowData(row);
+  const { showLoading, closedLoading } = useLoading();
+  const router = useRouter();
+  const handleExpandedRow = async (row: IDataTransaction) => {
+    showLoading();
 
   };
   return (
@@ -61,7 +65,7 @@ export const TableTransaction = ({ data }: TableTransactionProps) => {
               Ultimas transações
             </Text>
             <Button variant="primary" maxH="30px">
-              <Link>Ver todas</Link>
+              {/* <Link>Ver todas</Link> */}
             </Button>
           </Flex>
           <Box overflow={{ sm: "scroll", lg: "hidden" }}>
@@ -92,16 +96,23 @@ export const TableTransaction = ({ data }: TableTransactionProps) => {
                   const colorTypeTransation = type ? "green.400" : "red.400";
                   return (
                     <>
-                      <Tr key={index} onClick={() => handleExpandedRow(el)}>
+                      <Tr key={index}>
                         <Td
+                          onClick={() => handleExpandedRow(el)}
                           fontSize="sm"
                           fontWeight="bold"
                           borderColor={"gray.600"}
+                          cursor="pointer"
+                          _hover={{
+                            textDecoration: "underline",
+                          }}
                           {...(index === arr.length - 1 && {
                             border: "none",
                           })}
                         >
-                          {title}
+                          <Link href={`/admin/financeiro/${el.id}`} prefetch>
+                            {title}
+                          </Link>
                         </Td>
                         <Td
                           fontSize="sm"
