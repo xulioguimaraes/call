@@ -29,9 +29,9 @@ export default async function handler(
     buildNextAuthOption(req, res)
   );
 
-  // if (!session) {
-  //   return res.status(401).end();
-  // }
+  if (!session) {
+    return res.status(401).end();
+  }
 
   const finalDate = dayjs(new Date()).toDate();
   const mounth = finalDate.getMonth();

@@ -51,7 +51,7 @@ export default function Financial() {
   const { data, isLoading } = useQuery<IDataTransaction>(
     ["dataTableAdmin", params.page, params.perPage],
     async () => {
-      const response = await api.get(`/admin/get-transaction`, {
+      const response = await api.get(`/admin/transaction/get-transaction`, {
         params,
       });
       return response.data;

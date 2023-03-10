@@ -1,25 +1,81 @@
 import { useLoading } from "@/hooks/useLoading/useLoading";
+import { api } from "@/lib/axios";
 import { prisma } from "@/lib/prisma";
 import { buildNextAuthOption } from "@/pages/api/auth/[...nextauth].api";
-import { Box, Button, Card, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogProps,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { NextSeo } from "next-seo";
+import { useRouter } from "next/router";
 import { Trash } from "phosphor-react";
-import { useEffect } from "react";
+import { LegacyRef, useEffect, useRef } from "react";
 import { BiEdit } from "react-icons/bi";
 interface TransactionInfoProps {
   data: string;
   namePage: string;
 }
+// interface ITransaction {
+//   id: string;
+//   name: string;
+//   typeTransaction: {
+//     name: string;
+//   }
+// }
 export default function TransactionInfo(props: TransactionInfoProps) {
   const data = JSON.parse(props.data);
+  const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef: any = useRef();
+  const toast = useToast();
+  const { closedLoading, showLoading } = useLoading();
 
-  const { closedLoading } = useLoading();
   useEffect(() => {
     closedLoading();
   }, []);
+  const handleBack = () => router.back();
+  const handleDelete = async () => {
+    showLoading();
+    onClose();
+    const response = await api.delete(`/admin/transaction/${data.id}`);
+    if (response.status === 201) {
+      toast({
+        title: "Transação deletada",
+        description: "Essa ação é permanente, não pode ser revertida",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Erro ao deletar transação",
+        description: "Verifique as informações e tente novamente",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    await router.back();
+
+    closedLoading();
+  };
   return (
     <>
       <NextSeo title={`${props.namePage} | Clinifisio`} noindex />
@@ -44,7 +100,12 @@ export default function TransactionInfo(props: TransactionInfoProps) {
             >
               Editar
             </Button>
-            <Button leftIcon={<Trash />} variant={"solid"} colorScheme="red">
+            <Button
+              onClick={onOpen}
+              leftIcon={<Trash />}
+              variant={"solid"}
+              colorScheme="red"
+            >
               Excluir
             </Button>
           </Flex>
@@ -56,9 +117,39 @@ export default function TransactionInfo(props: TransactionInfoProps) {
         })}
 
         <Flex justify={"flex-end"}>
-          <Button variant={"outline"}>Voltar</Button>
+          <Button onClick={handleBack} variant={"outline"}>
+            Voltar
+          </Button>
         </Flex>
       </Card>
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isCentered
+        motionPreset="scale"
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Deletar transação?
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Você esta tem certeza que deseja deletar essa transação?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                Deletar
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 }

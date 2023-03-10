@@ -62,7 +62,7 @@ export default function Financial() {
     showLoading();
     const { description, price, title, type, type_transation } =
       data as FormDataOutput;
-    const response = await api.post("/admin/create-transaction", {
+    const response = await api.post("/admin/transaction/create-transaction", {
       description,
       price,
       title,

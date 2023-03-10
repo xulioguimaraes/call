@@ -2,7 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
-import { buildNextAuthOption } from "../auth/[...nextauth].api";
+import { buildNextAuthOption } from "../../auth/[...nextauth].api";
+
 const createTransactionSchema = z.object({
   title: z.string(),
   price: z.number(),
@@ -15,7 +16,7 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  if (request.method !== "POST") {
+  if (request.method !== "DELETE") {
     return response.status(405).end();
   }
 
@@ -28,21 +29,11 @@ export default async function handler(
   if (!session) {
     return response.status(401).end();
   }
+  const { id } = request.query;
 
-  const { description, price, title, type, type_transation } =
-    createTransactionSchema.parse(request.body);
-
-  await prisma.transation.create({
-    data: {
-      price,
-      title,
-      description,
-      type,
-      type_transation,
-      user_id: session.user.id,
-    },
+  await prisma.transation.delete({
+    where: { id: String(id) },
   });
-  //   await prisma.userTimeIntervals.createMany
 
-  return response.status(201).end();
+  return response.status(201).json(request.query);
 }
