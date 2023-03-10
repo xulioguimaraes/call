@@ -75,7 +75,7 @@ export function StatusCard(props: StatusCardProps) {
           </Stat>
           <Box
             my={"auto"}
-            color={useColorModeValue("gray.800", "gray.200")}
+            color={"gray.200"}
             alignContent={"center"}
           >
             {icon}

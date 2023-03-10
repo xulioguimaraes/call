@@ -49,6 +49,7 @@ export default function TransactionInfo(props: TransactionInfoProps) {
   useEffect(() => {
     closedLoading();
   }, []);
+  
   const handleBack = () => router.back();
   const handleDelete = async () => {
     showLoading();

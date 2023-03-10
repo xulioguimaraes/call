@@ -117,3 +117,15 @@ model TypeTransation {
 
   @@map("type_transations")
 }
+
+model Clients {
+  id            String   @id @default(uuid())
+  name          String
+  date_of_birth DateTime
+  cpf           String
+  phone         String
+  observation   String   @db.Text
+  created_at    DateTime
+
+  @@map("clients")
+}

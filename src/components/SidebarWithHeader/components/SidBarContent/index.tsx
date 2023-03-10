@@ -2,17 +2,12 @@ import {
   Box,
   BoxProps,
   CloseButton,
-  Divider,
-  DrawerBody,
   Flex,
   Stack,
-  Text,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import logoImage from "../../../../assets/logo.png";
 import { routers } from "@/routes/routes";
-import { useRouter } from "next/router";
 import { NavItem } from "../NavItem";
 
 interface SidebarProps extends BoxProps {
@@ -20,7 +15,6 @@ interface SidebarProps extends BoxProps {
 }
 
 export const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-  const router = useRouter();
   return (
     <Box
       transition="1s ease"

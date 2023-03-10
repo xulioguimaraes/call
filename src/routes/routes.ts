@@ -1,5 +1,6 @@
 import { AiFillHome } from "react-icons/ai";
 import { MdOutlineAttachMoney } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 export const routers = [
   {
@@ -13,8 +14,8 @@ export const routers = [
     name: "Financeiro",
   },
   {
-    path: "/",
-    icon: AiFillHome,
+    path: "/cadastro",
+    icon: FaUser,
     name: "Cadastro",
   },
 ];
