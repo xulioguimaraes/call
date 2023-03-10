@@ -1,4 +1,5 @@
 import { useLoading } from "@/hooks/useLoading/useLoading";
+import { api } from "@/lib/axios";
 
 import {
   AlertDialog,
@@ -13,38 +14,37 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  Grid,
   Heading,
-  HStack,
   Input,
   SimpleGrid,
   Stack,
   Textarea,
   useDisclosure,
-  VStack,
-  Wrap,
-  WrapItem,
+  useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { MdClear } from "react-icons/md";
 import InputMask from "react-input-mask";
-interface IStatus {
-  value: string;
-  date_last_trasnsation?: Date;
-  percentage: number;
-}
+
 import { z } from "zod";
 const formSchema = z.object({
   name: z.string().min(3),
-  cpf: z.string().min(14),
+  cpf: z
+    .string()
+    .min(14)
+    .transform((value) => value?.replace(/[^0-9]/g, "")),
   dateBirth: z
     .string()
     .min(10)
-    .refine((value) => dayjs().isAfter(dayjs(value))),
+    .refine((value) => dayjs().isAfter(dayjs(value)))
+    .transform((value) => {
+      return dayjs(value).toISOString();
+    }),
   phone: z.string().min(15),
   observation: z.string().optional(),
 });
@@ -54,39 +54,84 @@ type FormDataOutput = z.output<typeof formSchema>;
 
 export default function RegisterClient() {
   const router = useRouter();
+  const toast = useToast();
   const { showLoading, closedLoading } = useLoading();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef: any = useRef();
 
-  const [params, setParams] = useState({
-    perPage: 10,
-    page: 1,
-  });
-  useEffect(() => {
-    closedLoading();
-  }, []);
-  const handleSave = (data: FormDataOutput) => {
-    console.log(data);
-  };
-  const handleYes = () => router.back();
-
   const {
     register,
     handleSubmit,
-    control,
-    watch,
+    setError,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormDataInput>({
     resolver: zodResolver(formSchema),
   });
+  useEffect(() => {
+    closedLoading();
+  }, []);
+  const handleSave = async (data: any) => {
+    const { cpf, dateBirth, name, phone, observation } = data as FormDataOutput;
+    showLoading();
+    await api
+      .post("/admin/client/create", {
+        cpf,
+        date_of_birth: dateBirth,
+        name,
+        phone,
+        observation,
+      })
+      .then(async (response) => {
+        if (response.status === 201) {
+          toast({
+            title: "Cliente Cadastrado",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+        await router.back();
+        closedLoading();
+      })
+      .catch((errors) => {
+        const description = errors.response.data?.message
+          ? errors.response.data?.message
+          : "Verifique as informações e tente novamente";
+        toast({
+          title: "Erro ao criar cliente",
+          description,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        setError("cpf", {
+          message: "Cpf já cadastrado",
+        });
+      });
+
+    closedLoading();
+  };
+  const handleYes = () => router.back();
+  const handleClear = () => reset();
+
   return (
     <>
       <NextSeo title="Cadastar cliente | Clinifisio" noindex />
       <Card padding={4}>
-        <Heading as="h2" size={"md"} mb="2">
-          Cadastar cliente
-        </Heading>
+        <Flex justify={"space-between"} align="center">
+          <Heading as="h2" size={"md"} mb="2">
+            Cadastar cliente
+          </Heading>
+          <Button
+            onClick={handleClear}
+            leftIcon={<MdClear />}
+            variant="outline"
+          >
+            Limpar
+          </Button>
+        </Flex>
         <Stack spacing={2} as="form" onSubmit={handleSubmit(handleSave)}>
           <FormControl isInvalid={!!errors?.name}>
             <FormLabel mb={0} fontWeight={"bold"} fontSize="sm">
