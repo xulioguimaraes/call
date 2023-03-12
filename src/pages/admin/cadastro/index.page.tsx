@@ -1,8 +1,9 @@
 import { RegisterCard } from "@/components/RegisterCard/RegisterCard";
 import { useLoading } from "@/hooks/useLoading/useLoading";
+import { TableListAttendant } from "@/views/Client/components/TableListAttendant/TableListAttendant";
 import { TableListClient } from "@/views/Client/components/TableListClient/TableListClient";
 
-import { Box, Flex, Grid, Stack } from "@chakra-ui/react";
+import { Box, Flex, Grid, SimpleGrid, Stack } from "@chakra-ui/react";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ export default function Register() {
   return (
     <>
       <NextSeo title="Cadastros | Clinifisio" noindex />
-      <Stack spacing={4}>
+      <Stack as={"main"} spacing={4}>
         <Flex justify={"flex-end"}></Flex>
         <Grid
           gap={"2"}
@@ -36,9 +37,10 @@ export default function Register() {
             icon={<FaUserMd size={"3em"} />}
           />
         </Grid>
-        <Grid templateColumns={["repeat(1, 1fr)", "repeat(2, 1fr)"]}>
+        <SimpleGrid gap="2" columns={[2, null, 2]}>
           <TableListClient />
-        </Grid>
+          <TableListAttendant />
+        </SimpleGrid>
       </Stack>
     </>
   );

@@ -2,6 +2,7 @@ import { Pagination } from "@/components/Pagination/Pagination";
 import { useLoading } from "@/hooks/useLoading/useLoading";
 import { api } from "@/lib/axios";
 import {
+  Avatar,
   Box,
   Card,
   Divider,
@@ -14,60 +15,80 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { CardTable, ContainerTable } from "../../styles/styles";
 
-interface IDataClient {
+interface IDataAttendant {
   name: string;
-  phone: string;
+  avatar_url: string;
 }
 
-interface IResponseClient {
-  data: IDataClient[];
+interface IResponseAttendant {
+  data: IDataAttendant[];
   total: number;
 }
-export const TableListClient = () => {
+export const TableListAttendant = () => {
   const { showLoading, closedLoading } = useLoading();
+  const toast = useToast();
 
-  const [paramsClient, setParamsClient] = useState({
+  const [paramsAttendant, setParamsAttendant] = useState({
     perPage: 10,
     page: 1,
   });
-  const { data: dataClient, isLoading } = useQuery<IResponseClient>(
-    ["dataTableClient", paramsClient.page, paramsClient.perPage],
+  const {
+    data: dataAttendant,
+    isLoading,
+    error,
+  } = useQuery<IResponseAttendant>(
+    ["dataTableAttendant", paramsAttendant.page, paramsAttendant.perPage],
     async () => {
       const params = {
-        per_page: paramsClient.perPage,
-        page: paramsClient.page,
+        per_page: paramsAttendant.perPage,
+        page: paramsAttendant.page,
       };
-      const response = await api.get(`/admin/client/get-clients`, { params });
+      const response = await api.get(`/admin/attendant/get-attendant`, {
+        params,
+      });
       return response.data;
+    },
+    {
+      keepPreviousData: true,
     }
   );
-  const columnsClients = [
+  const columnsAttendant = [
     {
       label: "Nome",
     },
-    {
-      label: "Telefone",
-    },
   ];
-  const clients = dataClient?.data ? dataClient.data : [];
+  const attendant = dataAttendant?.data ? dataAttendant.data : [];
 
-  const totalPages = dataClient?.total ? dataClient.total : 0;
+  const totalPages = dataAttendant?.total ? dataAttendant.total : 0;
 
   const handlePageTable = (page: number) => {
-    setParamsClient((oldValue) => ({ ...oldValue, page }));
+    setParamsAttendant((oldValue) => ({ ...oldValue, page }));
   };
   const handlePerPage = (perPage: number) => {
-    setParamsClient((oldValue) => ({ ...oldValue, perPage }));
+    setParamsAttendant((oldValue) => ({ ...oldValue, perPage }));
   };
   useEffect(() => {
     if (isLoading) showLoading();
     else closedLoading();
   }, [isLoading]);
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Erro ao obter informações",
+        description:
+          "Tente atualizar a pagina, se o problema pessistir contate o administrador",
+        duration: 5000,
+        status: "error",
+      });
+    }
+  }, [error]);
 
   return (
     <>
@@ -75,7 +96,7 @@ export const TableListClient = () => {
         <CardTable>
           <Flex align="center" justify="flex-start" p="4">
             <Text fontSize="lg" fontWeight="bold">
-              Clientes
+              Atendentes
             </Text>
           </Flex>
           {isLoading ? (
@@ -87,7 +108,7 @@ export const TableListClient = () => {
               <Table>
                 <Thead>
                   <Tr>
-                    {columnsClients.map((column) => (
+                    {columnsAttendant.map((column) => (
                       <Th
                         key={column.label}
                         color="gray.400"
@@ -99,12 +120,13 @@ export const TableListClient = () => {
                   </Tr>
                 </Thead>
                 <Tbody overflowY={"hidden"}>
-                  {clients?.map((el, index, arr) => {
+                  {attendant?.map((el, index, arr) => {
                     return (
                       <>
                         <Tr key={index}>
                           <Td
                             fontSize="sm"
+                            p={2}
                             fontWeight="bold"
                             borderColor={"gray.600"}
                             cursor="pointer"
@@ -115,18 +137,18 @@ export const TableListClient = () => {
                               border: "none",
                             })}
                           >
-                            {/* <Link href={`/admin/financeiro/${el.id}`} prefetch> */}
-                            {el.name}
-                            {/* </Link> */}
-                          </Td>
-                          <Td
-                            fontSize="sm"
-                            {...(index === arr.length - 1 && {
-                              border: "none",
-                            })}
-                            borderColor={"gray.600"}
-                          >
-                            {el.phone}
+                            <Flex align={"center"} gap="4">
+                              <Flex align={"center"} justify="center">
+                                <Avatar
+                                  size="sm"
+                                  name="Prosper Otemuyiwa"
+                                  src={el.avatar_url}
+                                />
+                              </Flex>
+                              {/* <Link href={`/admin/financeiro/${el.id}`} prefetch> */}
+                              {el.name}
+                              {/* </Link> */}
+                            </Flex>
                           </Td>
                         </Tr>
                       </>
@@ -136,9 +158,9 @@ export const TableListClient = () => {
               </Table>
               <Divider color={"gray.600"} mb="2" />
               <Pagination
-                page={paramsClient.page}
+                page={paramsAttendant.page}
                 total={totalPages}
-                perPage={paramsClient.perPage}
+                perPage={paramsAttendant.perPage}
                 onChange={handlePageTable}
                 onChangePerPage={handlePerPage}
               />

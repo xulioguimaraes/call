@@ -18,10 +18,18 @@ export const Pagination = ({
 }: PaginationProps) => {
   const options = [10, 20, 30, 40, 50, 60, 70, 80, 100];
   const handleSelectPerPage = (page: string) => {
-    onChangePerPage(Number(page))
+    onChangePerPage(Number(page));
   };
   return (
-    <Box gap={4} className="d-flex" justifyContent={"flex-end"}>
+    <Box
+      gap={4}
+      className="d-flex"
+      justifyContent={"flex-end"}
+      position="absolute"
+      bottom={0}
+      right={0}
+      p="2"
+    >
       <Select
         w={"20"}
         value={perPage}

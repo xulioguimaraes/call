@@ -26,9 +26,9 @@ export default async function handler(
     buildNextAuthOption(request, response)
   );
 
-  if (!session) {
-    return response.status(401).end();
-  }
+  // if (!session) {
+  //   return response.status(401).end();
+  // }
   const { per_page, page } = request.query;
 
   const current_page = page ? Number(page) : 1;
@@ -36,15 +36,24 @@ export default async function handler(
   const skip = (current_page - 1) * take; // Número de registros a serem pulados
   const total = await prisma.clients.count();
   const total_pages = Math.ceil(total / take);
-  const clients = await prisma.clients.findMany({
+  const attendant = await prisma.user.findMany({
     take,
     skip,
     orderBy: {
-      created_at: "desc",
+      create_at: "desc",
     },
+    select:{
+      name: true,
+      avatar_url: true,
+      id: true,
+    }
+    // where: {
+    //     doctor: true
+    // }
   });
 
   return response
     .status(200)
-    .json({ data: clients, per_page, total, page, total_pages });
+    .json({ data: attendant, per_page, total, page, total_pages });
+
 }

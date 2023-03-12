@@ -10,21 +10,34 @@ import {
   Link,
   Stack,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { NextSeo } from "next-seo";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Copy } from "phosphor-react";
 import { useEffect, useState } from "react";
+import { MdDone } from "react-icons/md";
 import logoImage from "../../../assets/logo.png";
-
 export default function Register() {
   const router = useRouter();
+  const toast = useToast();
+  const [copyClipboard, setCopyClipboard] = useState(false);
   const { showLoading, closedLoading } = useLoading();
 
   useEffect(() => {
     closedLoading();
   }, []);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("http://localhost:3000/register?doctor=true");
+    setCopyClipboard(true);
+    toast({
+      duration: 5000,
+      status: "success",
+      title: "Link copiado",
+    });
+  };
 
   return (
     <>
@@ -61,7 +74,13 @@ export default function Register() {
               align="center"
             >
               <Link>http://localhost:3000/register</Link>
-              <Button leftIcon={<Copy />}>Copiar</Button>
+              <Button
+                {...(copyClipboard && { colorScheme: "green" })}
+                onClick={() => handleCopy()}
+                leftIcon={copyClipboard ? <MdDone /> : <Copy />}
+              >
+                <Text>Copiar</Text>
+              </Button>
             </Flex>
           </Box>
           <Flex pt="4" justify={"flex-end"}>
