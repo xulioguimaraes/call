@@ -1,11 +1,13 @@
+import { useLoading } from "@/hooks/useLoading/useLoading";
 import { api } from "@/lib/axios";
+import { Heading, Text } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Heading, MultiStep, Text, TextInput } from "@ignite-ui/react";
+import { Button, MultiStep, TextInput } from "@ignite-ui/react";
 import { AxiosError } from "axios";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { ArrowRight } from "phosphor-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Container, Form, FormError, Header } from "./styles";
@@ -37,12 +39,19 @@ export default function Register() {
     resolver: zodResolver(registerFormSchema),
   });
   const router = useRouter();
+  const { closedLoading } = useLoading();
+  const doctor = router.query?.doctor ? router.query.doctor : undefined;
+
+  useEffect(() => {
+    closedLoading();
+  }, []);
 
   useEffect(() => {
     if (router.query.username) {
       setValue("username", String(router.query.username));
     }
   }, [router.query?.username, setValue]);
+
   const handleRegister = async (data: RegisterFormData) => {
     try {
       await api.post("/users", {
@@ -63,8 +72,8 @@ export default function Register() {
       <NextSeo title="Crie uma conta | Call" />
       <Container>
         <Header>
-          <Heading as="strong">Bem-vindo ao Call</Heading>
-          <Text>
+          <Heading size={"lg"} lineHeight={"base"} as="strong" py={2}>Bem-vindo a Clinifisio</Heading>
+          <Text color={"gray.300"} py='2'>
             Precisamos de algumas informações para criar seu perfil!, Ah, você
             pode editar essas informações depois.
           </Text>
