@@ -20,19 +20,6 @@ export const Header = chakra("div", {
   },
 });
 
-// export const Form = styled(Box, {
-//   marginTop: "$6",
-//   display: "flex",
-//   flexDirection: "column",
-//   gap: "$4",
-
-//   label: {
-//     display: "flex",
-//     flexDirection: "column",
-//     gap: "$2",
-//   },
-// });
-
 export const Form = chakra("div", {
   baseStyle: {
     mt: "4",

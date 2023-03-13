@@ -20,7 +20,7 @@ model User {
   create_at  DateTime @default(now())
   avatar_url String?
   admin      Boolean  @default(false)
-  doctor     Boolean  @default(false)
+  doctor     Boolean  @default(true)
 
   accounts      Account[]
   sessions      Session[]

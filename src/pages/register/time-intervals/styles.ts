@@ -1,9 +1,13 @@
+import { chakra } from "@chakra-ui/react";
 import { Box, styled, Text } from "@ignite-ui/react";
 
-export const IntervalBox = styled(Box, {
-  marginTop: "$6",
-  display: "flex",
-  flexDirection: "column",
+export const IntervalBox = chakra("div", {
+  baseStyle: {
+    marginTop: "6",
+    display: "flex",
+    flexDirection: "column",
+    pb:4
+  },
 });
 
 export const IntervalContainer = styled("div", {

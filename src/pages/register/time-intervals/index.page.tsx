@@ -1,21 +1,18 @@
+import { useLoading } from "@/hooks/useLoading/useLoading";
 import { api } from "@/lib/axios";
 import { converTimeStringToMinutes } from "@/utils/conver-time-string-to-minutes";
 import { getWeekDays } from "@/utils/get-weekdays";
+import { Button, Heading, Input, Text } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Button,
-  Checkbox,
-  Heading,
-  MultiStep,
-  Text,
-  TextInput,
-} from "@ignite-ui/react";
+import { MultiStep, Checkbox, TextInput } from "@ignite-ui/react";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import { ArrowRight } from "phosphor-react";
+import { useEffect } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Container, Header } from "../styles";
+import { intervalsArray } from "./intervalsArray";
 import {
   FormError,
   IntervalBox,
@@ -73,50 +70,7 @@ export default function TimeIntervals() {
   } = useForm<TimeIntervalsFormInput>({
     resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
-      intervals: [
-        {
-          weekDay: 0,
-          enabled: false,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 1,
-          enabled: true,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 2,
-          enabled: true,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 3,
-          enabled: true,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 4,
-          enabled: true,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 5,
-          enabled: true,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-        {
-          weekDay: 6,
-          enabled: false,
-          startTime: "08:00",
-          endTime: "08:00",
-        },
-      ],
+      intervals: intervalsArray,
     },
   });
   const { fields } = useFieldArray({
@@ -127,6 +81,10 @@ export default function TimeIntervals() {
   const weekDays = getWeekDays();
 
   const intervals = watch("intervals");
+  const { closedLoading } = useLoading();
+  useEffect(() => {
+    closedLoading();
+  }, []);
 
   const router = useRouter();
   const handleSetTimeIntervals = async (data: any) => {
@@ -140,7 +98,9 @@ export default function TimeIntervals() {
 
       <Container>
         <Header>
-          <Heading as="strong">Quase lá</Heading>
+          <Heading size={"lg"} lineHeight={"base"} as="strong">
+            Quase lá
+          </Heading>
           <Text>
             Defina o intervalo de horaios que você esta disponivel em cada dia
             da semana.
@@ -200,7 +160,7 @@ export default function TimeIntervals() {
             {errors.intervals && (
               <FormError size="sm">{errors.intervals.message}</FormError>
             )}
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" isDisabled={isSubmitting}>
               Proximo passo <ArrowRight />
             </Button>
           </IntervalBox>

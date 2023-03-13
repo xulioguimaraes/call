@@ -2,15 +2,7 @@ import { api } from "@/lib/axios";
 import { buildNextAuthOption } from "@/pages/api/auth/[...nextauth].api";
 import { FormAnnotation } from "@/pages/admin/components/ClaimUsernameForm/styles";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Avatar,
-  Button,
-  Heading,
-  MultiStep,
-  Text,
-  TextArea,
-  TextInput,
-} from "@ignite-ui/react";
+import { Avatar, Heading, MultiStep, Text } from "@ignite-ui/react";
 import { GetServerSideProps } from "next";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -21,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Container, Form, FormError, Header } from "../styles";
 import { ProfileBox } from "./styles";
+import { Button, Textarea } from "@chakra-ui/react";
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -68,7 +61,7 @@ export default function UpdateProfile() {
           </label>
           <label>
             <Text size={"sm"}>Sobre você</Text>
-            <TextArea {...register("bio")} />
+            <Textarea {...register("bio")} />
             <FormAnnotation>
               <Text size={"sm"}>
                 Fale um pouco sobre você. Isto será exibido em sua pagina
@@ -76,9 +69,13 @@ export default function UpdateProfile() {
               </Text>
             </FormAnnotation>
           </label>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button
+            colorScheme={"green"}
+            rightIcon={<ArrowRight />}
+            type="submit"
+            isLoading={isSubmitting}
+          >
             Finalizar
-            <ArrowRight />
           </Button>
         </ProfileBox>
       </Container>

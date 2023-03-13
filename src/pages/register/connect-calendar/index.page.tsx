@@ -1,18 +1,26 @@
-import { Button, Heading, MultiStep, Text } from "@ignite-ui/react";
+import { MultiStep } from "@ignite-ui/react";
 import { ArrowRight, Check } from "phosphor-react";
 import { signIn, useSession } from "next-auth/react";
 import { Container, Header } from "../styles";
-import { AuthError, ConnectBox, ConnectItem } from "./styles";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
+import { useEffect } from "react";
+import { useLoading } from "@/hooks/useLoading/useLoading";
+import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { AuthError, ConnectBox, ConnectItem } from "./styles";
 
 export default function ConnectCalendar() {
   const session = useSession();
   const router = useRouter();
-
+  
   const hasuthError = !!router.query.error;
-
+  
   const isSignedIn = session.status === "authenticated";
+ 
+  const { closedLoading } = useLoading();
+  useEffect(() => {
+    closedLoading();
+  }, []);
 
   const handleConnectCalendar = async () => {
     await signIn("google");
@@ -23,11 +31,13 @@ export default function ConnectCalendar() {
 
   return (
     <>
-      <NextSeo title="Conecte sua agenda do Google | Call" noindex/>
+      <NextSeo title="Conecte sua agenda do Google | Call" noindex />
 
       <Container>
         <Header>
-          <Heading as="strong">Conecte sua agenda!</Heading>
+          <Heading size={"lg"} lineHeight={"base"} as="strong">
+            Conecte sua agenda!
+          </Heading>
           <Text>
             Conecte o seu calendário para verificar automaticamene as horas
             ocupadas e os novos eventos a medida em que são agendados
@@ -39,16 +49,15 @@ export default function ConnectCalendar() {
           <ConnectItem>
             <Text>Google Calendar</Text>
             {isSignedIn ? (
-              <Button size="sm" disabled>
+              <Button isDisabled>
                 Conectado <Check />
               </Button>
             ) : (
               <Button
-                variant="secondary"
-                size="sm"
+                rightIcon={<ArrowRight />}
                 onClick={handleConnectCalendar}
               >
-                Conectar <ArrowRight />
+                Conectar
               </Button>
             )}
           </ConnectItem>
@@ -60,14 +69,16 @@ export default function ConnectCalendar() {
             </AuthError>
           )}
 
-          <Button
-            onClick={handleNavigateToNextStep}
-            type="submit"
-            disabled={!isSignedIn}
-          >
-            Próximo passo
-            <ArrowRight />
-          </Button>
+          <Flex align={"center"} justify="flex-end">
+            <Button
+              rightIcon={<ArrowRight />}
+              onClick={handleNavigateToNextStep}
+              type="submit"
+              isDisabled={!isSignedIn}
+            >
+              Próximo passo
+            </Button>
+          </Flex>
         </ConnectBox>
       </Container>
     </>
