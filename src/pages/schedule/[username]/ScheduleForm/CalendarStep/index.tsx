@@ -1,11 +1,14 @@
 import { Calendar } from "@/components/Calendar";
 import { api } from "@/lib/axios";
+import { Box, Collapse, Flex, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import {
+  ClosedButton,
   Container,
+  HeaderTimePicker,
   TimePicker,
   TimePickerHeader,
   TimePickerItem,
@@ -62,11 +65,28 @@ export const CalendarStep = ({ onSelectDateTime }: CalendarStepProps) => {
     <Container isTimePickerOpen={isDateSelected}>
       <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
 
-      {isDateSelected && (
-        <TimePicker>
+      <Collapse in={isDateSelected} animateOpacity>
+        <HeaderTimePicker
+          display={"flex"}
+          alignItems="center"
+          justifyContent={"flex-start"}
+          pl="2"
+          flexWrap={"wrap"}
+        >
+          <Flex justify={"flex-end"}>
+            <ClosedButton
+              aria-label="borão de fechar"
+              onClick={() => setSelectedDate(null)}
+            />
+          </Flex>
           <TimePickerHeader>
-            {weekDay} <span>{describedDate}</span>
+            {weekDay}{" "}
+            <Text color={"gray.400"} as="span">
+              {describedDate}
+            </Text>
           </TimePickerHeader>
+        </HeaderTimePicker>
+        <TimePicker>
           <TimePickerList>
             {availability?.possibleTimes?.map((hour) => (
               <TimePickerItem
@@ -83,7 +103,7 @@ export const CalendarStep = ({ onSelectDateTime }: CalendarStepProps) => {
             ))}
           </TimePickerList>
         </TimePicker>
-      )}
+      </Collapse>
     </Container>
   );
 };
